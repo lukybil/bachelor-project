@@ -26,3 +26,10 @@ export const BREAKPOINT = {
   md: '768px',
   lg: '1200px',
 };
+
+export const FONT_SIZE = {
+  sm: '0.8125rem',
+  md: '1rem',
+  lg: '1.25rem',
+  xl: '1.75rem',
+};

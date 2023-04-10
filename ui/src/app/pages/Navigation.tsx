@@ -12,7 +12,14 @@ const Navigation = () => {
       }}
     >
       <NavigationBar />
-      <main>
+      <main
+        style={{
+          flex: 1,
+          justifyContent: 'stretch',
+          display: 'flex',
+          flexDirection: 'column',
+        }}
+      >
         <Outlet />
       </main>
     </div>

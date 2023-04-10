@@ -7,15 +7,14 @@ const shuffle = (arr) => {
 };
 
 class MazeGenerator {
-  width;
-  height;
-  grid;
   constructor(width, height) {
     this.width = width;
     this.height = height;
-    this.grid = new Array(width).fill(0).map(() => new Array(height).fill(0));
+    this.grid = new Array(width * height).fill(0);
   }
-  carvePath = (x, y, fromDir) => {
+  at = (x, y) => (x % this.width) + y * this.width;
+  carvePath(x, y, fromDir) {
+    console.log({ x, y });
     let dirFootprint = 0;
     switch (fromDir) {
       case 'N':
@@ -31,7 +30,7 @@ class MazeGenerator {
         dirFootprint = 2;
         break;
     }
-    this.grid[y][x] += dirFootprint;
+    this.grid[this.at(x, y)] += dirFootprint;
     const directions = shuffle(['N', 'E', 'S', 'W']);
     directions.forEach((dir) => {
       let nX = x,
@@ -58,19 +57,19 @@ class MazeGenerator {
         nX >= 0 &&
         nY >= 0 &&
         nX < this.width &&
-        nY < this.heigth &&
-        this.grid[nY][nX] === 0
+        nY < this.height &&
+        this.grid[this.at(nX, nY)] === 0
       ) {
-        this.grid[y][x] += dirFootprint;
+        this.grid[this.at(x, y)] += dirFootprint;
         this.carvePath(nX, nY, dir);
       }
     });
-  };
-  generateMaze = () => {
+  }
+  generateMaze() {
     this.carvePath(0, 0, 'S');
-    this.grid[this.height - 1][this.width - 1] += 4;
+    this.grid[this.at(this.width - 1, this.height - 1)] += 4;
     return this.grid;
-  };
+  }
 }
 
 export const generateMaze = (width, height) => {
