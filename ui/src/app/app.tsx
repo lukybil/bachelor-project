@@ -1,16 +1,27 @@
+import { Provider } from 'react-redux';
+import { BrowserRouter, Route, Routes } from 'react-router-dom';
 import styled from 'styled-components';
+import Home from './pages/Home';
+import LeaderBoards from './pages/LeaderBoards';
+import Navigation from './pages/Navigation';
+import store from './store';
 
-import NxWelcome from './nx-welcome';
-
-const StyledApp = styled.div`
-  // Your style here
-`;
+const StyledApp = styled.div``;
 
 export function App() {
   return (
-    <StyledApp>
-      <NxWelcome title="bachelor-project" />
-    </StyledApp>
+    <Provider store={store}>
+      <StyledApp>
+        <BrowserRouter>
+          <Routes>
+            <Route path="" Component={Navigation}>
+              <Route path="/leader-boards" Component={LeaderBoards} />
+              <Route path="/" Component={Home} />
+            </Route>
+          </Routes>
+        </BrowserRouter>
+      </StyledApp>
+    </Provider>
   );
 }
 
