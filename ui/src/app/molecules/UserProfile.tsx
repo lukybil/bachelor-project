@@ -10,6 +10,7 @@ import {
   COLOR_TERTIARY,
   COLOR_TEXT_SECONDARY,
 } from '../style/theme';
+import ImagePicker from './ImagePicker';
 
 const Container = styled.div<HTMLProps<HTMLSpanElement> & { isOpen: boolean }>`
   height: 100%;
@@ -44,6 +45,8 @@ const Popper = styled.div<HTMLProps<HTMLSpanElement> & { isOpen: boolean }>`
   position: absolute;
   visibility: hidden;
   display: flex;
+  flex-direction: column;
+  align-items: center;
   background-color: ${COLOR_TEXT_SECONDARY};
   top: calc(100%);
   right: 0;
@@ -62,12 +65,17 @@ const Popper = styled.div<HTMLProps<HTMLSpanElement> & { isOpen: boolean }>`
 
 const UserProfile = () => {
   const [open, setOpen] = useState(false);
+  const [imagePickerOpen, setImagePickerOpen] = useState(false);
   const { email, firstName, lastName, profileImage, username } = useAppSelector(
     (state) => state.user
   );
 
   const handleClick = () => {
     setOpen((old) => !old);
+  };
+
+  const handleChangeImage = () => {
+    setImagePickerOpen(true);
   };
 
   return (
@@ -78,12 +86,31 @@ const UserProfile = () => {
         </Container>
         <Popper isOpen={open}>
           <ProfileImage
-            sizeVariant="lg"
+            sizeVariant="xl"
             src={profileImage}
             alt={`profile of ${username}`}
+            onClick={handleChangeImage}
           />
-          <h3 style={{ whiteSpace: 'nowrap' }}>User profile</h3>
+          <h3 style={{ whiteSpace: 'nowrap' }}>{username}</h3>
+          <div
+            style={{
+              display: 'grid',
+              gridTemplateColumns: '1fr 1fr',
+              whiteSpace: 'nowrap',
+              columnGap: SPACING.md,
+            }}
+          >
+            <label htmlFor="firstName">First name</label>
+            <span id="firstName">{firstName}</span>
+            <label htmlFor="lastName">Last name</label>
+            <span id="lastName">{lastName}</span>
+            <label htmlFor="email">E-mail</label>
+            <span id="email">{email}</span>
+          </div>
         </Popper>
+        {imagePickerOpen && (
+          <ImagePicker onClose={() => setImagePickerOpen(false)} />
+        )}
       </ClickAwayListener>
     </div>
   );

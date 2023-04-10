@@ -6,3 +6,5 @@ export const COLOR_CONTRAST_SECONDARY = '#E76F51';
 
 export const COLOR_TEXT_PRIMARY = '#0a0a0a';
 export const COLOR_TEXT_SECONDARY = '#fff';
+
+export const COLOR_DARK_FILTER = '#0004';

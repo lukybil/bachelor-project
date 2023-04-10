@@ -20,3 +20,9 @@ export const DURATION = {
   lg: '1s',
   xl: '2s',
 };
+
+export const BREAKPOINT = {
+  sm: '320px',
+  md: '768px',
+  lg: '1200px',
+};

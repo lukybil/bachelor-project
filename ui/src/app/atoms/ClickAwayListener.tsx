@@ -3,12 +3,14 @@ import { HTMLProps, useCallback, useEffect, useRef } from 'react';
 interface ClickAwayListenerProps extends HTMLProps<HTMLDivElement> {
   onClickAway: () => void;
   listen: boolean;
+  consumeEvent?: boolean;
 }
 
 const ClickAwayListener = ({
   children,
   onClickAway,
   listen = true,
+  consumeEvent = false,
 }: ClickAwayListenerProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -19,10 +21,14 @@ const ClickAwayListener = ({
         event.target instanceof Node &&
         !ref.current.contains(event.target)
       ) {
+        if (consumeEvent) {
+          event.stopPropagation();
+          event.preventDefault();
+        }
         onClickAway();
       }
     },
-    [onClickAway]
+    [onClickAway, consumeEvent]
   );
 
   useEffect(() => {

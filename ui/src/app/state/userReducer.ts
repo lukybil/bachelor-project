@@ -1,12 +1,13 @@
 import { PayloadAction, createSlice } from '@reduxjs/toolkit';
 import { User } from '../types/User';
+import { DEFAULT_PROFILE_IMAGE } from './defaultProfileImage';
 
 const initialState = {
-  username: '',
-  firstName: '',
-  lastName: '',
-  email: '',
-  profileImage: '',
+  username: 'Guest',
+  firstName: 'FIRST NAME',
+  lastName: 'LAST NAME',
+  email: 'mail@mail.at',
+  profileImage: DEFAULT_PROFILE_IMAGE,
 } satisfies User;
 
 export const userSlice = createSlice({

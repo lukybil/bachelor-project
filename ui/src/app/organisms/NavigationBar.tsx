@@ -27,6 +27,7 @@ const NavigationBar = () => {
       <div style={{ justifySelf: 'start' }}></div>
       <div style={{ gap: SPACING.sm }}>
         <NavButton to="/">Home</NavButton>
+        <NavButton to="/play">Play</NavButton>
         <NavButton to="/leader-boards">Leader boards</NavButton>
       </div>
       <div style={{ justifySelf: 'end' }}>
