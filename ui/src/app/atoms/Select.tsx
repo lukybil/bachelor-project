@@ -1,6 +1,6 @@
 import { HTMLProps, useEffect, useMemo, useState } from 'react';
 import styled from 'styled-components';
-import { FONT_SIZE, SPACING } from '../style/style';
+import { FONT_SIZE, SHADOW, SPACING } from '../style/style';
 import {
   COLOR_CONTRAST_PRIMARY,
   COLOR_DARK_FILTER,
@@ -56,6 +56,7 @@ const OptionsContainer = styled.ul`
   overflow: auto;
   max-height: 300px;
   width: 100%;
+  box-shadow: ${SHADOW.md};
 `;
 
 const Select = ({

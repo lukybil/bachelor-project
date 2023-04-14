@@ -4,7 +4,7 @@ import styled from 'styled-components';
 import ClickAwayListener from '../atoms/ClickAwayListener';
 import ProfileImage from '../atoms/ProfileImage';
 import { useAppSelector } from '../state/hooks';
-import { DURATION, ICON_SIZE, SPACING } from '../style/style';
+import { DURATION, ICON_SIZE, SHADOW, SPACING } from '../style/style';
 import {
   COLOR_SECONDARY,
   COLOR_TERTIARY,
@@ -52,7 +52,7 @@ const Popper = styled.div<HTMLProps<HTMLSpanElement> & { isOpen: boolean }>`
   right: 0;
   padding: ${SPACING.md};
   border-radius: ${SPACING.md};
-  box-shadow: 3px 3px 5px 1px #888888;
+  box-shadow: ${SHADOW.md};
   opacity: 0;
   transition: opacity ${DURATION.md},
     visibility 0s ${({ isOpen }) => !isOpen && DURATION.md};

@@ -11,6 +11,7 @@ interface PlayerProps {
 const StyledDiv = styled.div<HTMLProps<HTMLDivElement> & { size: number }>`
   background-color: ${COLOR_CONTRAST_PRIMARY};
   position: absolute;
+  border-radius: 50%;
   ${({ size }) => `width: ${size}px; height: ${size}px;`}
 `;
 

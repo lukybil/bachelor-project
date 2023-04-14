@@ -33,3 +33,7 @@ export const FONT_SIZE = {
   lg: '1.25rem',
   xl: '1.75rem',
 };
+
+export const SHADOW = {
+  md: '3px 3px 5px 1px #888888',
+};

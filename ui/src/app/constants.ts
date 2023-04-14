@@ -23,3 +23,5 @@ export const MOVES = {
   [GameMove.left]: { y: 0, x: -1 },
   [GameMove.right]: { y: 0, x: 1 },
 };
+
+export const ZOOM_LEVEL = [10, 16, 24, 32];

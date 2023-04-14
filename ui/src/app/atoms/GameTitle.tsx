@@ -6,7 +6,7 @@ import { COLOR_CONTRAST_PRIMARY } from '../style/theme';
 import { Difficulty } from '../types/Difficulty';
 import { zeroPad } from '../utils/zeroPad';
 
-interface GameTitleProps extends HTMLProps<HTMLDivElement> {
+export interface GameTitleProps extends HTMLProps<HTMLDivElement> {
   seconds: number;
   difficulty: Difficulty;
 }
@@ -19,7 +19,7 @@ const Stack = styled.div`
 `;
 
 const Text = styled.span`
-  font-size: ${FONT_SIZE.md};
+  font-size: ${FONT_SIZE.lg};
   font-weight: bold;
 `;
 
