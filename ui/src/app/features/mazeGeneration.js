@@ -14,7 +14,6 @@ class MazeGenerator {
   }
   at = (x, y) => (x % this.width) + y * this.width;
   carvePath(x, y, fromDir) {
-    console.log({ x, y });
     let dirFootprint = 0;
     switch (fromDir) {
       case 'N':
