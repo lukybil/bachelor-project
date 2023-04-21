@@ -2,16 +2,18 @@ import { useCallback, useState } from 'react';
 import Button from '../atoms/Button';
 import Select from '../atoms/Select';
 import { DIFFICULTY, MAZE_SIZE } from '../constants';
+import { useInitWasmModule } from '../hooks/useInitWasmModule';
 import Game from '../organisms/Game';
 import { SPACING } from '../style/style';
 import { COLOR_CONTRAST_PRIMARY } from '../style/theme';
 import { Difficulty } from '../types/Difficulty';
 import { GameFinishReason } from '../types/GameFinishReason';
+import { WasmModule } from '../types/WasmModule';
 
 const Play = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [difficulty, setDifficulty] = useState(Difficulty.easy);
-
+  useInitWasmModule(WasmModule.mazeGeneration);
   const handlePlayClick = () => {
     setIsPlaying(true);
   };
@@ -59,12 +61,15 @@ const Play = () => {
         <>
           <h3 style={{ color: COLOR_CONTRAST_PRIMARY }}>Choose difficulty</h3>
           <Select
+            id="game-mode-select"
             options={mazeSizes}
             value={difficulty}
             onChange={handleDifficultyChange}
             outerStyle={{ marginBottom: SPACING.sm }}
           />
-          <Button onClick={handlePlayClick}>Play!</Button>
+          <Button onClick={handlePlayClick} id="play-button">
+            Play!
+          </Button>
         </>
       )}
     </div>

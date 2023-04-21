@@ -15,6 +15,7 @@ interface Option {
 }
 
 interface SelectProps {
+  id: string;
   options: Option[];
   value: string;
   onChange: (value: string | null) => void;
@@ -65,6 +66,7 @@ const Select = ({
   onChange,
   width,
   outerStyle,
+  id,
 }: SelectProps) => {
   const [open, setOpen] = useState(false);
   const [selected, setSelected] = useState<Option | null>(
@@ -102,6 +104,7 @@ const Select = ({
           <StyledSelect
             style={{ width: width ?? '200px' }}
             onClick={() => setOpen((old) => !old)}
+            id={id}
           >
             <span>{selected?.text}</span>
           </StyledSelect>

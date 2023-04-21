@@ -1,13 +1,37 @@
-import { getGreeting } from '../support/app.po';
-
 describe('bachelor-project', () => {
   beforeEach(() => cy.visit('/'));
 
   it('should display welcome message', () => {
-    // Custom command example, see `../support/commands.ts` file
-    cy.login('my-email@something.com', 'myPassword');
+    cy.visit('/play');
 
-    // Function helper example, see `../support/app.po.ts` file
-    getGreeting().contains('Welcome bachelor-project');
+    cy.get('#game-grid').should('not.exist');
+
+    cy.get('#game-mode-select').click();
+
+    cy.get('li[value="veryHard"]').click();
+
+    // cy.window().its('performance').invoke('mark', 'generateMazeStart');
+
+    cy.wait(2000)
+      .window()
+      .then((win) => {
+        win.performance.mark('generateMazeStart');
+      });
+
+    cy.get('#play-button').click();
+
+    cy.get('#game-grid')
+      .should('be.visible')
+      .then(() => {
+        // cy.window().its('performance').invoke('measure', 'generateMazeStart');
+        cy.window().then((win) => {
+          const result = win.performance.measure(
+            'generateMaze',
+            'generateMazeStart'
+          );
+          console.log({ result });
+          cy.log('generate maze time', `${result.duration}ms`);
+        });
+      });
   });
 });

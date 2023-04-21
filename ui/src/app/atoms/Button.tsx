@@ -4,12 +4,13 @@ import { FONT_SIZE, SPACING } from '../style/style';
 import {
   COLOR_CONTRAST_PRIMARY,
   COLOR_CONTRAST_SECONDARY,
+  COLOR_LIGHT_HIGHLIGHT,
   COLOR_PRIMARY,
   COLOR_TEXT_SECONDARY,
 } from '../style/theme';
 
-interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
-  variant?: 'contained';
+export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
+  variant?: 'contained' | 'plain';
 }
 
 const ContainedButton = styled.button`
@@ -28,9 +29,21 @@ const ContainedButton = styled.button`
   }
 `;
 
+const PlainButton = styled(ContainedButton)`
+  background: none;
+  border: none;
+  &:hover {
+    cursor: pointer;
+    background-color: ${COLOR_LIGHT_HIGHLIGHT};
+  }
+`;
+
 const Button = ({ variant = 'contained', children, ...rest }: ButtonProps) => {
   if (variant === 'contained') {
     return <ContainedButton {...rest}>{children}</ContainedButton>;
+  }
+  if (variant === 'plain') {
+    return <PlainButton {...rest}>{children}</PlainButton>;
   }
   return <button {...rest}>{children}</button>;
 };

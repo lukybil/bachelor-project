@@ -11,6 +11,7 @@ const ClickAwayListener = ({
   onClickAway,
   listen = true,
   consumeEvent = false,
+  ...rest
 }: ClickAwayListenerProps) => {
   const ref = useRef<HTMLDivElement>(null);
 
@@ -40,7 +41,11 @@ const ClickAwayListener = ({
     };
   }, [handleClickAway, listen]);
 
-  return <div ref={ref}>{children}</div>;
+  return (
+    <div {...rest} ref={ref}>
+      {children}
+    </div>
+  );
 };
 
 export default ClickAwayListener;

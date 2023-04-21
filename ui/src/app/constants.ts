@@ -1,6 +1,12 @@
 import { Difficulty } from './types/Difficulty';
 import { GameMove } from './types/GameMoves';
 
+export const USING_WASM = import.meta.env.VITE_USING_WASM === 'true';
+
+export const WASM_MODULES = {
+  mazeGeneration: 'hello_wasm_bg.wasm',
+};
+
 export const MAZE_SIZE = {
   [Difficulty.veryEasy]: { width: 5, height: 5 },
   [Difficulty.easy]: { width: 20, height: 20 },

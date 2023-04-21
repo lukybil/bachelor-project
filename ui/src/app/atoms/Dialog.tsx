@@ -1,8 +1,10 @@
 import { HTMLAttributes } from 'react';
+import { GrClose } from 'react-icons/gr';
 import styled from 'styled-components';
 import { BREAKPOINT, SPACING } from '../style/style';
 import { COLOR_DARK_FILTER, COLOR_TEXT_SECONDARY } from '../style/theme';
 import ClickAwayListener from './ClickAwayListener';
+import IconButton from './IconButton';
 
 const Background = styled.div`
   height: 100vh;
@@ -19,10 +21,15 @@ const Background = styled.div`
 `;
 
 const Container = styled.div`
-  max-height: calc(100% - ${SPACING.lg} * 2);
-  max-width: calc(min(100%, ${BREAKPOINT.md}) - ${SPACING.md} * 2);
+  max-height: calc(100vh - ${SPACING.lg} * 2);
+  max-width: calc(min(100vw, ${BREAKPOINT.md}) - ${SPACING.md} * 2);
   background-color: ${COLOR_TEXT_SECONDARY};
   padding: ${SPACING.lg};
+  position: relative;
+  overflow: auto;
+  display: flex;
+  flex-direction: column;
+  border-radius: ${SPACING.md};
 `;
 
 interface DialogProps extends HTMLAttributes<HTMLDivElement> {
@@ -35,7 +42,16 @@ const Dialog = ({ open, onClose, children, ...rest }: DialogProps) => {
   return (
     <Background>
       <ClickAwayListener listen onClickAway={onClose} consumeEvent>
-        <Container {...rest}>{children}</Container>
+        <Container {...rest}>
+          <IconButton
+            style={{ position: 'absolute', top: 0, right: 0 }}
+            variant="plain"
+            onClick={onClose}
+          >
+            <GrClose />
+          </IconButton>
+          {children}
+        </Container>
       </ClickAwayListener>
     </Background>
   );

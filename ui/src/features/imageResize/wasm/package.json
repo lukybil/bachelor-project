@@ -1,0 +1,12 @@
+{
+  "name": "resize-image",
+  "version": "0.1.0",
+  "files": [
+    "resize_image_bg.wasm",
+    "resize_image.js",
+    "resize_image.d.ts"
+  ],
+  "module": "resize_image.js",
+  "types": "resize_image.d.ts",
+  "sideEffects": false
+}

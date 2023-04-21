@@ -1,12 +1,16 @@
 interface CellProps {
+  id: string;
   borders: number;
   size: number;
 }
 
-const Cell = ({ borders, size }: CellProps) => {
+const Cell = ({ borders, size, id }: CellProps) => {
   let bordersData = borders;
   const style: React.CSSProperties = {
-    border: `1px solid black`,
+    borderLeft: '1px solid black',
+    borderRight: '1px solid black',
+    borderTop: '1px solid black',
+    borderBottom: '1px solid black',
     width: `${size}px`,
     height: `${size}px`,
   };
@@ -26,7 +30,7 @@ const Cell = ({ borders, size }: CellProps) => {
     style.borderTop = 'none';
     bordersData -= 1;
   }
-  return <div style={style}></div>;
+  return <div id={id} style={style}></div>;
 };
 
 export default Cell;

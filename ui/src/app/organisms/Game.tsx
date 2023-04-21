@@ -4,9 +4,9 @@ import { Handler, KeyFilter } from 'react-use/lib/useKey.js';
 import styled from 'styled-components';
 import Cell from '../atoms/Cell.js';
 import GameTitle from '../atoms/GameTitle.js';
+import LoadingSpinner from '../atoms/LoadingSpinner.js';
 import Player from '../atoms/Player.js';
 import { MAZE_SIZE, ZOOM_LEVEL } from '../constants.js';
-import { generateMaze } from '../features/mazeGeneration.js';
 import GameMenu from '../molecules/GameMenu.js';
 import { SPACING } from '../style/style.js';
 import { Difficulty } from '../types/Difficulty.js';
@@ -14,6 +14,8 @@ import { GameFinishReason } from '../types/GameFinishReason.js';
 import { GameMove } from '../types/GameMoves.js';
 import { Zoom } from '../types/Zoom.js';
 import { getPossibleMoves } from '../utils/getPossibleMoves.js';
+
+import { useGenerateMaze } from '../hooks/useGenerateMaze.js';
 
 const Grid = styled.div`
   display: grid;
@@ -39,6 +41,7 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
   const [cellSize, setCellSize] = useState(10);
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
   const [seconds, setSeconds] = useState(0);
+  const generateMaze = useGenerateMaze();
   const [timer, setTimer] = useState<ReturnType<typeof setInterval> | null>(
     null
   );
@@ -50,7 +53,7 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
   const maze = useMemo(
     () =>
       mazeData.map((cell, index) => (
-        <Cell key={index} borders={cell} size={cellSize} />
+        <Cell id={`cell-${index}`} key={index} borders={cell} size={cellSize} />
       )),
     [mazeData, cellSize]
   );
@@ -91,8 +94,10 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
   );
 
   useEffect(() => {
-    setMazeData(generateMaze(cols, rows));
-  }, [cols, rows]);
+    console.log('generating');
+    const maze = generateMaze(cols, rows);
+    setMazeData(maze);
+  }, []);
 
   useEffect(() => {
     if (maze?.length > 0) {
@@ -190,10 +195,27 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
       }}
     >
       <GameTitle difficulty={difficulty} seconds={seconds} />
-      <Grid style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
-        {maze}
-        <Player cellSize={cellSize} {...position} />
-      </Grid>
+      {maze.length > 0 ? (
+        <Grid
+          id="game-grid"
+          style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
+        >
+          {maze}
+          <Player cellSize={cellSize} {...position} />
+        </Grid>
+      ) : (
+        <div
+          style={{
+            width: cols * cellSize,
+            height: rows * cellSize,
+            display: 'flex',
+            justifyContent: 'center',
+            alignItems: 'center',
+          }}
+        >
+          <LoadingSpinner />
+        </div>
+      )}
       <GameMenu onZoom={handleZoom} />
     </div>
   );

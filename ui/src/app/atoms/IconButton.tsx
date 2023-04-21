@@ -1,8 +1,7 @@
-import { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { SPACING } from '../style/style';
 import { COLOR_PRIMARY } from '../style/theme';
-import Button from './Button';
+import Button, { ButtonProps } from './Button';
 
 const Wrapper = styled.div`
   & svg {
@@ -10,11 +9,11 @@ const Wrapper = styled.div`
   }
 `;
 
-type IconButtonProps = HTMLAttributes<HTMLButtonElement>;
+type IconButtonProps = ButtonProps;
 
 const IconButton = ({ children, ...rest }: IconButtonProps) => {
   return (
-    <Button {...rest} style={{ padding: SPACING.sm }}>
+    <Button {...rest} style={{ padding: SPACING.sm, ...rest.style }}>
       <Wrapper style={{ width: 16, height: 16 }}>{children}</Wrapper>
     </Button>
   );

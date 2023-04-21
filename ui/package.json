@@ -5,11 +5,14 @@
   "scripts": {
     "start": "nx serve",
     "build": "nx build",
-    "test": "nx test"
+    "test": "nx test",
+    "e2e": "nx e2e e2e",
+    "e2e-headed": "nx e2e e2e --browser chrome --headed --no-exit"
   },
   "private": true,
   "dependencies": {
     "@reduxjs/toolkit": "^1.9.3",
+    "@types/react-redux": "^7.1.25",
     "react": "18.2.0",
     "react-dom": "18.2.0",
     "react-icons": "^4.8.0",
