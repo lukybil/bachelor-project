@@ -7,7 +7,11 @@
     "build": "nx build",
     "test": "nx test",
     "e2e": "nx e2e e2e",
-    "e2e-headed": "nx e2e e2e --browser chrome --headed --no-exit"
+    "e2e-headed": "nx e2e e2e --browser chrome --headed --no-exit",
+    "build-maze-generation": "wasm-pack build ../wasm/maze-generation --target web & npm run copy-wasm",
+    "build-image-resize": "wasm-pack build ../wasm/resize-image --target web & npm run copy-wasm",
+    "build-json-csv": "wasm-pack build ../wasm/json-csv --target web & npm run copy-wasm",
+    "copy-wasm": "@powershell -NoProfile -ExecutionPolicy Unrestricted -Command ./scripts/copy-wasm-files.ps1"
   },
   "private": true,
   "dependencies": {

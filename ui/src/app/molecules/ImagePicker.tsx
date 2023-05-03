@@ -1,13 +1,12 @@
 import { useEffect, useMemo, useRef, useState } from 'react';
 import styled from 'styled-components';
+import Button from '../atoms/Button';
 import Dialog from '../atoms/Dialog';
 import Input from '../atoms/Input';
-import { useInitWasmModule } from '../hooks/useInitWasmModule';
 import { useResizeImage } from '../hooks/useResizeImage';
 import { useAppSelector } from '../state/hooks';
 import { SPACING } from '../style/style';
 import { COLOR_PRIMARY, COLOR_TERTIARY } from '../style/theme';
-import { WasmModule } from '../types/WasmModule';
 
 interface ImagePickerProps {
   onClose: () => void;
@@ -52,7 +51,8 @@ const ImagePicker = ({ onClose }: ImagePickerProps) => {
   const { profileImage } = useAppSelector((state) => state.user);
   const [image, setImage] = useState<string | null>(profileImage);
   const [size, setSize] = useState({ width: 0, height: 0 });
-  const [resizedImage, setResizedImage] = useState<string | null>(null);
+  const [fileSize, setFileSize] = useState(0);
+  const [loading, setLoading] = useState(false);
   const imageRef = useRef<HTMLImageElement>(null);
   const resizeImage = useResizeImage();
 
@@ -71,34 +71,37 @@ const ImagePicker = ({ onClose }: ImagePickerProps) => {
     return () => resizeObserver.disconnect();
   }, [image, imageRef]);
 
-  useEffect(() => {
-    if (image) {
-      (async () => {
-        const resized = await resizeImage(image, 400, 400);
-        setResizedImage(resized);
-      })();
-    }
-  }, [image, resizeImage]);
-
-  const selectionSize = useMemo(
-    () => (size.width > size.height ? size.height : size.width),
-    [size]
-  );
+  const selectionSize = useMemo(() => (size.width > size.height ? size.height : size.width), [size]);
 
   const handleChange: React.FormEventHandler<HTMLInputElement> = (event) => {
     const file = event.currentTarget.files?.[0];
     if (!file) return;
-    const fileUrl = URL.createObjectURL(file);
-    setImage(fileUrl);
+    const reader = new FileReader();
+    setLoading(true);
+    reader.readAsDataURL(file);
+    reader.onload = () => {
+      setImage(reader.result?.toString() ?? null);
+      setFileSize(file.size);
+      setLoading(false);
+    };
+    // const fileUrl = URL.createObjectURL(file);
+    // setImage(fileUrl);
+  };
+
+  const handleResize = async () => {
+    if (image) {
+      const resized = await resizeImage(image, 400, 400, fileSize);
+      setImage(resized);
+    }
   };
 
   return (
     <Dialog open onClose={onClose}>
       <Stack>
         <ImageContainer>
-          {resizedImage && (
+          {image && (
             <img
-              src={resizedImage}
+              src={image}
               alt="picking profile"
               ref={imageRef}
               style={{
@@ -124,7 +127,12 @@ const ImagePicker = ({ onClose }: ImagePickerProps) => {
             </div>
           </Selection>
         </ImageContainer>
-        <Input onChange={handleChange} type="file" />
+        <div style={{ display: 'flex', flexDirection: 'row', gap: SPACING.md }}>
+          <Input id="profile-image-input" onChange={handleChange} type="file" />
+          <Button variant="contained" onClick={handleResize} disabled={loading} id="crop-button">
+            Crop
+          </Button>
+        </div>
       </Stack>
     </Dialog>
   );

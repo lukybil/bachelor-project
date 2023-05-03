@@ -1,0 +1,23 @@
+<!DOCTYPE html>
+<html lang="en-US">
+  <head>
+    <meta charset="utf-8" />
+    <title>hello-wasm example</title>
+  </head>
+  <body>
+    <script type="module">
+      import init, { create_maze } from "./pkg/hello_wasm.js";
+      import { printMaze } from "./index.js";
+      init().then(() => {
+        document.getElementById("createMaze").addEventListener("click", () => {
+          console.time("timer");
+          const maze = create_maze(100, 100);
+          console.timeEnd("timer");
+          printMaze(maze, 100, 100);
+        });
+      });
+    </script>
+    <div id="root" style="box-sizing: border-box"></div>
+    <button id="createMaze">create maze</button>
+  </body>
+</html>

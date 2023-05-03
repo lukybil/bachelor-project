@@ -19,20 +19,9 @@ const Input = ({ type, id, ...rest }: InputProps) => {
         <input type="text" id={elemId} {...rest} />
       ) : type === 'file' ? (
         <>
-          <input
-            style={{ display: 'none' }}
-            type="file"
-            id={elemId}
-            {...rest}
-          />
-          <Label
-            ref={labelRef}
-            htmlFor={elemId}
-            style={{ display: 'inline-block' }}
-          >
-            <Button onClick={() => labelRef.current?.click()}>
-              Choose file
-            </Button>
+          <input style={{ display: 'none' }} type="file" id={elemId} {...rest} />
+          <Label ref={labelRef} htmlFor={elemId} style={{ display: 'inline-block' }}>
+            <Button onClick={() => labelRef.current?.click()}>Choose file</Button>
           </Label>
         </>
       ) : (

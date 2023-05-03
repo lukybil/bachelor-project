@@ -10,6 +10,7 @@ import store from './store';
 const StyledApp = styled.div``;
 
 export function App() {
+  console.log(store);
   return (
     <Provider store={store}>
       <StyledApp>

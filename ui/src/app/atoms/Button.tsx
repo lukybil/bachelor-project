@@ -1,4 +1,3 @@
-import { HTMLAttributes } from 'react';
 import styled from 'styled-components';
 import { FONT_SIZE, SPACING } from '../style/style';
 import {
@@ -9,7 +8,7 @@ import {
   COLOR_TEXT_SECONDARY,
 } from '../style/theme';
 
-export interface ButtonProps extends HTMLAttributes<HTMLButtonElement> {
+export interface ButtonProps extends React.HTMLProps<HTMLButtonElement> {
   variant?: 'contained' | 'plain';
 }
 

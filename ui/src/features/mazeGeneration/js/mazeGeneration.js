@@ -52,13 +52,7 @@ class MazeGenerator {
           dirFootprint = 8;
           break;
       }
-      if (
-        nX >= 0 &&
-        nY >= 0 &&
-        nX < this.width &&
-        nY < this.height &&
-        this.grid[this.at(nX, nY)] === 0
-      ) {
+      if (nX >= 0 && nY >= 0 && nX < this.width && nY < this.height && this.grid[this.at(nX, nY)] === 0) {
         this.grid[this.at(x, y)] += dirFootprint;
         this.carvePath(nX, nY, dir);
       }
@@ -74,5 +68,6 @@ class MazeGenerator {
 export const generateMaze = (width, height) => {
   const generator = new MazeGenerator(width, height);
   const maze = generator.generateMaze();
+  // const maze = generateIterative(width, height);
   return maze;
 };

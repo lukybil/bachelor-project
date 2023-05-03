@@ -1,29 +1,4 @@
-export const resizeImage = async (
-  url,
-  options = {
-    maxWidth: 1024,
-    maxHeight: 768,
-    contentType: 'image/jpeg',
-    quality: 0.7,
-  }
-) => {
-  const calculateSize = (img) => {
-    let w = img.width,
-      h = img.height;
-    if (w > h) {
-      if (w > options.maxWidth) {
-        h = Math.round((h * options.maxWidth) / w);
-        w = options.maxWidth;
-      }
-    } else {
-      if (h > options.maxHeight) {
-        w = Math.round((w * options.maxHeight) / h);
-        h = options.maxHeight;
-      }
-    }
-    return [w, h];
-  };
-
+export const resizeImage = async (url, nwidth, nheight) => {
   return new Promise((resolve) => {
     const img = new Image();
     img.src = url;
@@ -32,32 +7,24 @@ export const resizeImage = async (
     };
     img.onload = function () {
       URL.revokeObjectURL(this.src);
-      const [newWidth, newHeight] = calculateSize(
-        img,
-        options.maxWidth,
-        options.maxHeight
-      );
+      const ratio = this.width / this.height;
+      const nratio = nwidth / nheight;
       const canvas = document.createElement('canvas');
-      canvas.width = newWidth;
-      canvas.height = newHeight;
+      canvas.width = nwidth;
+      canvas.height = nheight;
       const ctx = canvas.getContext('2d');
-      ctx.drawImage(img, 0, 0, newWidth, newHeight);
+      const rect = this.height > this.width ? this.width : this.height;
+      if (nratio < ratio) {
+        const nw = (this.width / ratio) * nratio;
+        ctx.drawImage(img, (this.width - nw) / 2, 0, rect, rect, 0, 0, nwidth, nheight);
+      } else {
+        const nh = (this.height * ratio) / nratio;
+        ctx.drawImage(img, 0, (this.height - nh) / 2, rect, rect, 0, 0, nwidth, nheight);
+      }
 
-      const resultUrl = canvas.toDataURL(options.contentType, options.quality),
-        result = {
-          url: resultUrl,
-          contentType: resultUrl.match(/^data:([^;]+);base64,/im)[1] || '',
-          b64: resultUrl.replace(/^data:([^;]+);base64,/gim, ''),
-        };
+      const resultUrl = canvas.toDataURL('image/jpeg', 1.0);
 
-      canvas.toBlob(
-        (blob) => {
-          result.size = blob.size;
-          resolve(result);
-        },
-        options.contentType,
-        options.quality
-      );
+      resolve(resultUrl.replace(/^data:([^;]+);base64,/gim, ''));
     };
   });
 };

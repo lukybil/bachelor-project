@@ -1,0 +1,24 @@
+[package]
+name = "wasm-csv-json"
+version = "0.1.0"
+edition = "2021"
+
+# See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
+
+[lib]
+crate-type = ["cdylib"]
+
+[dependencies]
+js-sys = "0.3.61"
+num-derive = "0.3.3"
+num-traits = "0.2.15"
+rand = "0.8.5"
+getrandom = { version = "0.2", features = ["js"] }
+web-sys = { version = "0.3.61", features = [ "File" ] }
+serde = { version = "1.0", features = ["derive"] }
+wasm-bindgen = { version = "0.2", features = ["serde-serialize"] }
+serde-wasm-bindgen = "0.5.0"
+csv = "1.2.1"
+stringreader = "0.1.1"
+stdweb = "0.4.20"
+serde_json = "1.0.96"

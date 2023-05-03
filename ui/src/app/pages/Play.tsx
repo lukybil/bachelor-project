@@ -1,9 +1,9 @@
-import { useCallback, useState } from 'react';
+import { useCallback, useEffect, useMemo, useRef, useState } from 'react';
 import Button from '../atoms/Button';
 import Select from '../atoms/Select';
 import { DIFFICULTY, MAZE_SIZE } from '../constants';
 import { useInitWasmModule } from '../hooks/useInitWasmModule';
-import Game from '../organisms/Game';
+import Game, { GameHandle } from '../organisms/Game';
 import { SPACING } from '../style/style';
 import { COLOR_CONTRAST_PRIMARY } from '../style/theme';
 import { Difficulty } from '../types/Difficulty';
@@ -13,12 +13,15 @@ import { WasmModule } from '../types/WasmModule';
 const Play = () => {
   const [isPlaying, setIsPlaying] = useState(false);
   const [difficulty, setDifficulty] = useState(Difficulty.easy);
+  const gameRef = useRef<GameHandle>(null);
   useInitWasmModule(WasmModule.mazeGeneration);
   const handlePlayClick = () => {
     setIsPlaying(true);
+    gameRef.current?.start();
   };
   const handleCancelClick = () => {
     setIsPlaying(false);
+    gameRef.current?.stop();
   };
   const handleDifficultyChange = (value: string | null) => {
     setDifficulty((value ?? 'easy') as Difficulty);
@@ -30,10 +33,21 @@ const Play = () => {
     }
   }, []);
 
-  const mazeSizes = Object.entries(MAZE_SIZE).map(([key, value]) => ({
-    value: key,
-    text: `${DIFFICULTY[key as Difficulty]} (${value.width} x ${value.height})`,
-  }));
+  const mazeSizes = useMemo(
+    () =>
+      Object.entries(MAZE_SIZE).map(([key, value]) => ({
+        value: key,
+        text: `${DIFFICULTY[key as Difficulty]} (${value.width} x ${value.height})`,
+      })),
+    []
+  );
+
+  useEffect(
+    () => () => {
+      console.log('unmounting Play');
+    },
+    []
+  );
 
   return (
     <div
@@ -46,17 +60,11 @@ const Play = () => {
         alignItems: 'center',
       }}
     >
+      <Game ref={gameRef} difficulty={difficulty} onStart={handleGameStart} onFinish={handleGameFinish} />
       {isPlaying ? (
-        <>
-          <Game
-            difficulty={difficulty}
-            onStart={handleGameStart}
-            onFinish={handleGameFinish}
-          />
-          <Button onClick={handleCancelClick} style={{ marginTop: SPACING.md }}>
-            Cancel
-          </Button>
-        </>
+        <Button id="cancel-button" onClick={handleCancelClick} style={{ marginTop: SPACING.md }}>
+          Cancel
+        </Button>
       ) : (
         <>
           <h3 style={{ color: COLOR_CONTRAST_PRIMARY }}>Choose difficulty</h3>

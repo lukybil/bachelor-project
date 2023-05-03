@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useMemo, useState } from 'react';
+import { forwardRef, useCallback, useEffect, useImperativeHandle, useMemo, useState } from 'react';
 import { useKey } from 'react-use';
 import { Handler, KeyFilter } from 'react-use/lib/useKey.js';
 import styled from 'styled-components';
-import Cell from '../atoms/Cell.js';
 import GameTitle from '../atoms/GameTitle.js';
 import LoadingSpinner from '../atoms/LoadingSpinner.js';
 import Player from '../atoms/Player.js';
@@ -15,6 +14,7 @@ import { GameMove } from '../types/GameMoves.js';
 import { Zoom } from '../types/Zoom.js';
 import { getPossibleMoves } from '../utils/getPossibleMoves.js';
 
+import Cell from '../atoms/Cell.js';
 import { useGenerateMaze } from '../hooks/useGenerateMaze.js';
 
 const Grid = styled.div`
@@ -34,28 +34,62 @@ interface GameProps {
   onFinish: (reason: GameFinishReason) => void;
 }
 
+export interface GameHandle {
+  start: () => void;
+  stop: () => void;
+}
+
 const MAPPED_KEYS = ['ArrowUp', 'ArrowDown', 'ArrowLeft', 'ArrowRight'];
 
-const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
+const Game: React.ForwardRefRenderFunction<GameHandle, GameProps> = ({ difficulty, onStart, onFinish }, ref) => {
   const [mazeData, setMazeData] = useState<number[]>([]);
   const [cellSize, setCellSize] = useState(10);
   const [position, setPosition] = useState<Position>({ x: 0, y: 0 });
   const [seconds, setSeconds] = useState(0);
   const generateMaze = useGenerateMaze();
-  const [timer, setTimer] = useState<ReturnType<typeof setInterval> | null>(
-    null
-  );
-  const { width: cols, height: rows } = useMemo(
-    () => MAZE_SIZE[difficulty],
-    [difficulty]
-  );
+  const [timer, setTimer] = useState<ReturnType<typeof setInterval> | null>(null);
+  const { width: cols, height: rows } = useMemo(() => MAZE_SIZE[difficulty], [difficulty]);
 
   const maze = useMemo(
-    () =>
-      mazeData.map((cell, index) => (
-        <Cell id={`cell-${index}`} key={index} borders={cell} size={cellSize} />
-      )),
+    () => mazeData.map((cell, index) => <Cell id={`cell-${index}`} key={index} borders={cell} size={cellSize} />),
     [mazeData, cellSize]
+  );
+
+  const reset = useCallback(() => {
+    if (timer) {
+      clearInterval(timer);
+      setTimer(null);
+    }
+    setSeconds(0);
+    setPosition({ x: 0, y: 0 });
+    setMazeData([]);
+  }, [timer]);
+
+  const start = useCallback(async () => {
+    console.log('generating');
+    const maze = await generateMaze(cols, rows);
+    setMazeData(maze);
+  }, [rows, cols, generateMaze]);
+
+  const handleFinish = useCallback(
+    (reason: GameFinishReason = GameFinishReason.cancel) => {
+      reset();
+      onFinish(reason);
+    },
+    [onFinish, reset]
+  );
+
+  const stop = useCallback(() => {
+    handleFinish();
+  }, [handleFinish]);
+
+  useImperativeHandle(
+    ref,
+    () => ({
+      start,
+      stop,
+    }),
+    [start, stop]
   );
 
   const handleStart = useCallback(() => {
@@ -63,10 +97,12 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
     setTimer(setInterval(() => setSeconds((old) => old + 1), 1000));
   }, [onStart, setTimer, setSeconds]);
 
-  const handleFinish = useCallback(() => {
-    if (timer) clearInterval(timer);
-    onFinish(GameFinishReason.cancel);
-  }, [timer, onFinish]);
+  useEffect(
+    () => () => {
+      if (timer) clearInterval(timer);
+    },
+    [timer]
+  );
 
   const handleZoom = useCallback(
     (zoomChange: Zoom) => {
@@ -79,26 +115,6 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
     [cellSize, setCellSize]
   );
 
-  useEffect(
-    () => () => {
-      handleFinish();
-    },
-    []
-  );
-
-  useEffect(
-    () => () => {
-      if (timer) clearInterval(timer);
-    },
-    [timer]
-  );
-
-  useEffect(() => {
-    console.log('generating');
-    const maze = generateMaze(cols, rows);
-    setMazeData(maze);
-  }, []);
-
   useEffect(() => {
     if (maze?.length > 0) {
       handleStart();
@@ -107,7 +123,7 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
 
   useEffect(() => {
     if (position.x === cols - 1 && position.y === rows - 1) {
-      setTimeout(() => handleFinish(), 1);
+      setTimeout(() => handleFinish(GameFinishReason.win), 1);
     }
   }, [position, cols, rows, handleFinish]);
 
@@ -123,12 +139,7 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
   const makeStep = useCallback(
     ({ x, y }: Position) => {
       const newPosition = { x: position.x + x, y: position.y + y };
-      if (
-        newPosition.x >= cols ||
-        newPosition.x < 0 ||
-        newPosition.y >= rows ||
-        newPosition.y < 0
-      ) {
+      if (newPosition.x >= cols || newPosition.x < 0 || newPosition.y >= rows || newPosition.y < 0) {
         return;
       }
       setPosition(newPosition);
@@ -184,6 +195,8 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
   const predicate: KeyFilter = (event) => MAPPED_KEYS.includes(event.key);
   useKey(predicate, handleKeyPress);
 
+  if (maze?.length === 0) return null;
+
   return (
     <div
       style={{
@@ -196,10 +209,7 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
     >
       <GameTitle difficulty={difficulty} seconds={seconds} />
       {maze.length > 0 ? (
-        <Grid
-          id="game-grid"
-          style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}
-        >
+        <Grid id="game-grid" style={{ gridTemplateColumns: `repeat(${cols}, 1fr)` }}>
           {maze}
           <Player cellSize={cellSize} {...position} />
         </Grid>
@@ -221,4 +231,4 @@ const Game = ({ difficulty, onStart, onFinish }: GameProps) => {
   );
 };
 
-export default Game;
+export default forwardRef(Game);

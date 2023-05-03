@@ -2,6 +2,7 @@ import { Difficulty } from './types/Difficulty';
 import { GameMove } from './types/GameMoves';
 
 export const USING_WASM = import.meta.env.VITE_USING_WASM === 'true';
+export const API_URL = import.meta.env.VITE_API_URL;
 
 export const WASM_MODULES = {
   mazeGeneration: 'hello_wasm_bg.wasm',

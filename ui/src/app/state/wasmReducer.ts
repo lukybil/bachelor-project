@@ -11,7 +11,14 @@ const initialState = {
 export const wasmSlice = createSlice({
   name: 'wasm',
   initialState: initialState,
-  reducers: {},
+  reducers: {
+    addInitialized: (state, action) => {
+      const wasmModule = action.payload;
+      const unique = new Set(state.initialized);
+      unique.add(wasmModule);
+      state.initialized = Array.from(unique);
+    },
+  },
   extraReducers: (builder) => {
     builder.addCase(initWasmModule.pending, (state, action) => {
       const unique = new Set(state.initialized);
@@ -20,5 +27,7 @@ export const wasmSlice = createSlice({
     });
   },
 });
+
+export const { addInitialized } = wasmSlice.actions;
 
 export default wasmSlice.reducer;

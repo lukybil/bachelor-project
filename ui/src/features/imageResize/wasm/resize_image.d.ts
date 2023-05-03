@@ -2,11 +2,11 @@
 /* eslint-disable */
 /**
 * @param {string} url
-* @param {number} width
-* @param {number} height
+* @param {number} nwidth
+* @param {number} nheight
 * @returns {string}
 */
-export function resize_image(url: string, width: number, height: number): string;
+export function resize_image(url: string, nwidth: number, nheight: number): string;
 
 export type InitInput = RequestInfo | URL | Response | BufferSource | WebAssembly.Module;
 

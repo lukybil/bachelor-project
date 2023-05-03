@@ -81,11 +81,12 @@ const UserProfile = () => {
   return (
     <div style={{ position: 'relative' }}>
       <ClickAwayListener listen={open} onClickAway={() => setOpen(false)}>
-        <Container isOpen={open} onClick={handleClick}>
+        <Container id="user-profile" isOpen={open} onClick={handleClick}>
           <FaUserCircle size={ICON_SIZE.md} />
         </Container>
         <Popper isOpen={open}>
           <ProfileImage
+            id="profile-details-image"
             sizeVariant="xl"
             src={profileImage}
             alt={`profile of ${username}`}

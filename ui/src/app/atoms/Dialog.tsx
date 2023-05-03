@@ -44,6 +44,7 @@ const Dialog = ({ open, onClose, children, ...rest }: DialogProps) => {
       <ClickAwayListener listen onClickAway={onClose} consumeEvent>
         <Container {...rest}>
           <IconButton
+            id="close-dialog-button"
             style={{ position: 'absolute', top: 0, right: 0 }}
             variant="plain"
             onClick={onClose}
