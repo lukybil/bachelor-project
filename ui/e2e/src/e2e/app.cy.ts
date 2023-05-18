@@ -1,22 +1,26 @@
 describe('bachelor-project', () => {
   beforeEach(() => cy.visit('/'));
 
-  // it('should load maze generation wasm module', () => {
-  //   for (let i = 0; i < 10; i++) {
-  //     cy.wait(4000);
-  //     cy.reload();
-  //   }
-  // });
-
-  it('should convert json to csv', () => {
+  it('should init wasm module', () => {
     cy.visit('/leader-boards');
-    for (let i = 0; i < 10; i++) {
-      cy.wait(1000);
-      cy.get('#convert-button').click();
-      cy.get('#loaded-indicator', { timeout: 20_000 }).should('be.visible');
+    for (let i = 0; i < 30; i++) {
+      cy.wait(2000);
       cy.reload();
     }
   });
+
+  // it('should convert json to csv', () => {
+  //   cy.visit('/leader-boards');
+  //   for (let j = 0; j < 10; j++) {
+  //     cy.wait(1000);
+  //     for (let i = 0; i < 11; i++) {
+  //       cy.get('#convert-button').click();
+  //       cy.wait(100);
+  //       cy.get('#converted-indicator', { timeout: 20_000 }).should('be.visible');
+  //     }
+  //     cy.reload();
+  //   }
+  // });
 
   // it('should generate maze', () => {
   //   cy.visit('/play');

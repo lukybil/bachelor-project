@@ -81,6 +81,12 @@ app.post('/measurement', async (req: Request, res: Response) => {
         `${MEASUREMENTS_DIR}/imageResize/init_measurements.csv`,
         `${time},${new Date(timestamp).toISOString()}\n`
       );
+    } else if (feature.includes(WasmModule.jsonToCsv)) {
+      const { timestamp, time } = req.body as ModuleInitMeasurement;
+      await fs.appendFile(
+        `${MEASUREMENTS_DIR}/jsonToCsv/init_measurements.csv`,
+        `${time},${new Date(timestamp).toISOString()}\n`
+      );
     }
   }
   res.setHeader('Access-Control-Allow-Origin', '*');

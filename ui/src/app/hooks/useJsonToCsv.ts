@@ -15,7 +15,7 @@ export const useJsonToCsv = () => {
       window.performance.mark('start');
       let csv = '';
       if (isWasm) {
-        csv = json_to_csv(JSON.stringify(data));
+        csv = json_to_csv(data);
       } else {
         csv = jsonToCsv(data);
       }

@@ -1,7 +1,7 @@
 import { randomInt } from 'crypto';
 import fs from 'fs/promises';
 
-const ROW_COUNT = 1_000_000;
+const ROW_COUNT = 500_000;
 
 const difficulties = ['veryEasy', 'easy', 'medium', 'hard', 'veryHard'];
 

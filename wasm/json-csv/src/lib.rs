@@ -1,6 +1,6 @@
 extern crate wasm_bindgen;
+use chrono::Utc;
 use serde::{Deserialize, Serialize};
-use serde_json;
 use wasm_bindgen::prelude::*;
 
 #[wasm_bindgen]
@@ -25,41 +25,31 @@ pub struct GameRecord {
 }
 
 #[wasm_bindgen]
-pub fn json_to_csv(json: &str) -> String {
-    log("started alg");
-    let arr: Vec<GameRecord> = serde_json::from_str(json)
+pub fn json_to_csv(json: JsValue) -> String {
+    let t0 = Utc::now();
+    let arr: Vec<GameRecord> = serde_wasm_bindgen::from_value(json)
         .map_err(|err| console_log!("{}", err.to_string()))
         .unwrap();
-    log("parsed to array");
-    let mut csv_writer = csv::Writer::from_writer(vec![]);
-    log("init writer");
-    csv_writer
-        .write_record(&[
-            "completionTime",
-            "difficulty",
-            "username",
-            "firstName",
-            "lastName",
-            "email",
-            "profileImage",
-        ])
-        .unwrap();
-    log("written headers");
+    let t1 = Utc::now();
+    console_log!("parse into vector: {}ms", (t1 - t0).num_milliseconds());
+    let mut csv = "".to_string();
     for row in arr {
-        csv_writer
-            .write_record(&[
-                row.completionTime.to_string(),
-                row.difficulty,
-                row.username,
-                row.firstName,
-                row.lastName,
-                row.email,
-                row.profileImage,
-            ])
-            .unwrap();
+        let csv_row = format!(
+            "{},{},{},{},{},{},{}",
+            row.completionTime.to_string(),
+            row.difficulty,
+            row.username,
+            row.firstName,
+            row.lastName,
+            row.email,
+            row.profileImage,
+        );
+        csv += &csv_row;
     }
-    log("written data");
-    let csv: String = String::from_utf8(csv_writer.into_inner().unwrap()).unwrap();
-    log("converted to csv");
+    let t2 = Utc::now();
+    console_log!(
+        "written into csv string: {}ms",
+        (t2 - t1).num_milliseconds()
+    );
     return csv;
 }
